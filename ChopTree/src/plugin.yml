@@ -1,0 +1,8 @@
+name: ChopTree
+main: me.Iso.ChopTree.ChopTree
+version: 1.2
+commands:
+  ChopTree:
+    description: Control the plugin
+    aliases:
+        ct
