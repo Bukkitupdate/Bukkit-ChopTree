@@ -13,8 +13,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.inventory.ItemStack;
 import net.minecraft.server.*;
 
@@ -27,7 +29,7 @@ import com.gmail.nossr50.datatypes.SkillType;
 import com.gmail.nossr50.skills.Skills;
 import com.gmail.nossr50.skills.WoodCutting;
 
-public class ChopTreeBlockListener extends BlockListener {	
+public class ChopTreeBlockListener implements Listener {	
 	
 	public static Player pubplayer = null;
 	public static ChopTree plugin;
@@ -36,6 +38,7 @@ public class ChopTreeBlockListener extends BlockListener {
 		plugin = instance;
 	}
 	
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockBreak (BlockBreakEvent event) {
 		
 		if (event.isCancelled()) return;
@@ -170,13 +173,12 @@ public class ChopTreeBlockListener extends BlockListener {
 		return block;
 	}
 
-	@SuppressWarnings("static-access")
 	public boolean isTree (Block block, Player player, Block first) {
 		
 		if (!plugin.options.contains("OnlyTrees")) return true;
 		
-		if (plugin.options.contains("Permissions") && plugin.options.contains("EnableOverride")) {
-			if (plugin.permissionHandler.has(player, "choptree.override.onlytrees")) {
+		if (plugin.options.contains("EnableOverride")) {
+			if (player.hasPermission("choptree.override.onlytrees")) {
 				return true;
 			}
 		}
@@ -296,11 +298,10 @@ public class ChopTreeBlockListener extends BlockListener {
 		
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean breaksTool (Player player, ItemStack item) {
 		
-		if (plugin.options.contains("Permissions") && plugin.options.contains("EnableOverride")) {
-			if (plugin.permissionHandler.has(player, "choptree.override.moredamagetotools")) {
+		if (plugin.options.contains("EnableOverride")) {
+			if (player.hasPermission("choptree.override.moredamagetotools")) {
 				return false;
 			}
 		}
@@ -373,11 +374,10 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean denyPermission (Player player) {
 		//Permissions check
 		if (plugin.options.contains("Permissions")) {
-			if (!plugin.permissionHandler.has(player, "choptree.chop")) {
+			if (!player.hasPermission("choptree.chop")) {
 				return true;
 			}
 		}
@@ -403,11 +403,10 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean denyItem (Player player) {
 
-		if (plugin.options.contains("Permissions") && plugin.options.contains("EnableOverride")) {
-			if (plugin.permissionHandler.has(player, "choptree.override.useanything")) {
+		if (plugin.options.contains("EnableOverride")) {
+			if (player.hasPermission("choptree.override.useanything")) {
 				return false;
 			}
 		}
@@ -425,13 +424,12 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean denyTreeFeller (Player player) {
 		
 		if (!plugin.activemcMMO()) return false;
 		
-		if (plugin.options.contains("Permissions") && plugin.options.contains("EnableOverride")) {
-			if (plugin.permissionHandler.has(player, "choptree.override.treefellerneeded")) {
+		if (plugin.options.contains("EnableOverride")) {
+			if (player.hasPermission("choptree.override.treefellerneeded")) {
 				return false;
 			}
 		}
@@ -447,12 +445,11 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean isChunkProtected (Player player, Chunk chunk) {
 		
 		if (plugin.options.contains("Permissions")){
 			if (plugin.options.contains("EnableOverride")) {
-				if (plugin.permissionHandler.has(player, "choptree.override.chunkprotection")) {
+				if (player.hasPermission("choptree.override.chunkprotection")) {
 					return false;
 				}
 			}
@@ -483,12 +480,11 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean isChunkFullyProtected (Player player, Chunk chunk) {
 		
 		if (plugin.options.contains("Permissions")) {
 			if (plugin.options.contains("EnableOverride")) {
-				if (plugin.permissionHandler.has(player, "choptree.override.chunkprotection")) {
+				if (player.hasPermission("choptree.override.chunkprotection")) {
 					return false;
 				}
 			}
@@ -503,11 +499,12 @@ public class ChopTreeBlockListener extends BlockListener {
 		return false;
 	}
 	
-	@SuppressWarnings("static-access")
 	public boolean interruptWhenBreak (Player player) {
 		
-		if (plugin.options.contains("Permissions") && plugin.options.contains("EnableOverride")) {
-			if (plugin.permissionHandler.has(player, "choptree.override.interruptiftoolbreaks")) {
+		//TODO: player.hasPermission(
+		
+		if (plugin.options.contains("EnableOverride")) {
+			if (player.hasPermission("choptree.override.interruptiftoolbreaks")) {
 				return false;
 			}
 		}
@@ -522,19 +519,19 @@ public class ChopTreeBlockListener extends BlockListener {
 		PlayerProfile PP = Users.getProfile(player);
 		ItemStack inhand = player.getItemInHand();
 		
-		Skills.monitorSkills(player);
+		//Skills.monitorSkills(player);
 		
 		if(LoadProperties.woodcuttingrequiresaxe){
 			if(m.isAxes(inhand)){
 				WoodCutting.woodCuttingProcCheck(player, block);
 				if(block.getData() == (byte)0) {
-					PP.addXP(SkillType.WOODCUTTING, 7 * LoadProperties.xpGainMultiplier);
+					PP.addXP(SkillType.WOODCUTTING, 7 * LoadProperties.xpGainMultiplier, player);
 				}
 				if(block.getData() == (byte)1) {
-					PP.addXP(SkillType.WOODCUTTING, 8 * LoadProperties.xpGainMultiplier);
+					PP.addXP(SkillType.WOODCUTTING, 8 * LoadProperties.xpGainMultiplier, player);
 				}
 				if(block.getData() == (byte)2) {
-					PP.addXP(SkillType.WOODCUTTING, 9 * LoadProperties.xpGainMultiplier);
+					PP.addXP(SkillType.WOODCUTTING, 9 * LoadProperties.xpGainMultiplier, player);
 				}
 			}
 		}

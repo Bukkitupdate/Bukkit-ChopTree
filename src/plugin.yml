@@ -6,3 +6,53 @@ commands:
     description: Control the plugin
     aliases:
         ct
+permissions:
+    choptree.*:
+        description: Herp Derp.
+        children:
+            colors.rainbow: true
+    choptree.command.change:
+        description: 
+        default: op
+    choptree.command.fullprotect:
+        description: 
+        default: op
+    choptree.command.protect:
+        description: 
+        default: op
+    choptree.command.change:
+        description: 
+        default: op
+    choptree.command.reload:
+        description: 
+        default: op
+    choptree.override.chunkprotection:
+        description: 
+        default: op
+    choptree.override.treefellerneeded:
+        description: 
+        default: op
+    choptree.override.useanything:
+        description: 
+        default: op
+    choptree.chop:
+        description: 
+        default: op
+    choptree.override.moredamagetotools:
+        description: 
+        default: op
+    choptree.command.toggle:
+        description:
+        default: true
+    choptree.command.check:
+        description:
+        default: true
+    choptree.command.chunk:
+        description:
+        default: true
+    choptree.override.interruptiftoolbreaks:
+        description:
+        default: false
+    choptree.override.onlytrees:
+        description:
+        default: false
